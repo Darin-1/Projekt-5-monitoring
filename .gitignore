@@ -1,0 +1,4 @@
+vagrant/.vagrant/
+vagrant/secrets.yml
+ansible/vars/secrets.yml
+*.swp
