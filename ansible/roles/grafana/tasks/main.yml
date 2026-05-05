@@ -1,0 +1,13 @@
+---
+- name: Installera Grafana
+  become: yes
+  apt:
+    name: grafana
+    state: present
+
+- name: Säkerställ att Grafana är igång
+  become: yes
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes

@@ -1,0 +1,11 @@
+---
+- name: Installera Node Exporter på alla maskiner
+  hosts: all
+  roles:
+    - node_exporter
+
+- name: Installera Övervakning (Prometheus & Grafana)
+  hosts: monitoring
+  roles:
+    - prometheus
+    - grafana
