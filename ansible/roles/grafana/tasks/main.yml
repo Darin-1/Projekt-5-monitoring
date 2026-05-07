@@ -1,11 +1,33 @@
 ---
-- name: Installera Grafana
+- name: Installera beroenden för Grafana
   become: yes
   apt:
-    name: grafana
+    name:
+      - apt-transport-https
+      - software-properties-common
+      - wget
     state: present
 
-- name: Säkerställ att Grafana är igång
+- name: Lägg till Grafana GPG-nyckel
+  become: yes
+  apt_key:
+    url: https://apt.grafana.com/gpg.key
+    state: present
+
+- name: Lägg till Grafana repository
+  become: yes
+  apt_repository:
+    repo: deb https://apt.grafana.com stable main
+    state: present
+
+- name: Installera Grafana Enterprise
+  become: yes
+  apt:
+    name: grafana-enterprise
+    state: present
+    update_cache: yes
+
+- name: Starta och aktivera Grafana
   become: yes
   systemd:
     name: grafana-server
