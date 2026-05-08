@@ -1,12 +1,18 @@
 ---
-- name: Installera Prometheus Node Exporter
+# Installs and starts the Prometheus Node Exporter.
+
+# "become" escalates privileges. True runs the task as root.
+# False runs as the user. Apt requires root, so yes.
+- name: Install Prometheus Node Exporter
   become: yes
   apt:
     name: prometheus-node-exporter
     state: present
     update_cache: yes
 
-- name: Säkerställ att Node Exporter körs
+# "enabled" controls startup behavior. True starts the service on boot.
+# False requires manual start. Metrics collection must survive reboots, so yes.
+- name: Ensure Node Exporter runs
   become: yes
   systemd:
     name: prometheus-node-exporter

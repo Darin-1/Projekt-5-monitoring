@@ -1,5 +1,9 @@
 ---
-- name: Installera beroenden för Grafana
+# Installs and starts the Grafana Enterprise server.
+
+# "become" escalates privileges. True runs the task as root.
+# False runs as the user. Apt requires root, so yes.
+- name: Install Grafana dependencies
   become: yes
   apt:
     name:
@@ -8,26 +12,28 @@
       - wget
     state: present
 
-- name: Lägg till Grafana GPG-nyckel
+- name: Add Grafana GPG key
   become: yes
   apt_key:
     url: https://apt.grafana.com/gpg.key
     state: present
 
-- name: Lägg till Grafana repository
+- name: Add Grafana repository
   become: yes
   apt_repository:
     repo: deb https://apt.grafana.com stable main
     state: present
 
-- name: Installera Grafana Enterprise
+- name: Install Grafana Enterprise
   become: yes
   apt:
     name: grafana-enterprise
     state: present
     update_cache: yes
 
-- name: Starta och aktivera Grafana
+# "enabled" controls startup behavior. True starts the service on boot.
+# False requires manual start. Monitoring must survive reboots, so yes.
+- name: Start and enable Grafana
   become: yes
   systemd:
     name: grafana-server

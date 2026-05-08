@@ -106,7 +106,7 @@ vagrant up
 vagrant ssh control
 
 # 3. Kör Ansible-playbooken för att installera all mjukvara
-cd /projekt/ansible
+cd /project/ansible
 ansible-playbook site.yml
 ```
 
