@@ -1,25 +1,30 @@
+# Sets up local VMs in an isolated network.
+# Using Vagrant avoids cloud costs and keeps testing local.
 Vagrant.configure("2") do |config|
+  # "box" determines the base operating system.
+  # "ubuntu/jammy64" provides a stable Ubuntu 22.04 LTS environment.
   config.vm.box = "ubuntu/jammy64"
 
-  # 1. KONTROLLNOD (Där du kör din Ansible-kod)
+  # "synced_folder" shares a host directory with the VM.
+  # Syncing "../" to "/projekt" lets the control node read Ansible files.
   config.vm.define "control" do |ctrl|
     ctrl.vm.hostname = "control"
     ctrl.vm.network "private_network", ip: "192.168.56.10"
+    ctrl.vm.synced_folder "../", "/projekt"
   end
 
-  # 2. ÖVERVAKNINGSSERVER (Prometheus + Grafana + Alertmanager)
+  # "private_network" assigns a static IP on a host-only network.
+  # Static IPs ensure Ansible always finds the target machines.
   config.vm.define "monitor" do |mon|
     mon.vm.hostname = "monitor"
     mon.vm.network "private_network", ip: "192.168.56.11"
   end
 
-  # 3. TJÄNSTESERVER 1 (Målnod för node_exporter)
   config.vm.define "server1" do |s1|
     s1.vm.hostname = "server1"
     s1.vm.network "private_network", ip: "192.168.56.12"
   end
 
-  # 4. TJÄNSTESERVER 2 (Målnod för node_exporter)
   config.vm.define "server2" do |s2|
     s2.vm.hostname = "server2"
     s2.vm.network "private_network", ip: "192.168.56.13"

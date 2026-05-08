@@ -1,9 +1,16 @@
 ---
+# Main entrypoint for the Ansible configuration.
+# Separated into two plays to apply roles to specific machine groups.
+
+# "hosts: all" ensures the exporter runs on every machine.
+# This makes all nodes, including control and monitor, report metrics.
 - name: Installera Node Exporter på alla maskiner
   hosts: all
   roles:
     - node_exporter
 
+# "hosts: monitoring" targets only the dedicated monitor node.
+# This keeps the heavy metrics database off the application servers.
 - name: Installera Övervakning (Prometheus & Grafana)
   hosts: monitoring
   roles:
