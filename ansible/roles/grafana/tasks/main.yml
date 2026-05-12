@@ -31,6 +31,43 @@
     state: present
     update_cache: yes
 
+# Creates the directory to store our JSON dashboard files.
+- name: Create dashboards directory
+  become: yes
+  file:
+    path: /var/lib/grafana/dashboards
+    state: directory
+    owner: grafana
+    group: grafana
+    mode: '0755'
+
+# Automates adding Prometheus as a data source so we don't have to click in the UI.
+# Notifies the handler to restart Grafana if the file changes.
+- name: Configure Prometheus datasource
+  become: yes
+  template:
+    src: datasource.yml.j2
+    dest: /etc/grafana/provisioning/datasources/prometheus.yml
+  notify: Restart Grafana
+
+# Tells Grafana where to look for our dashboard files.
+- name: Configure dashboard provider
+  become: yes
+  template:
+    src: dashboard_provider.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/provider.yml
+  notify: Restart Grafana
+
+# Copies the actual dashboard JSON file to the server.
+- name: Copy Node Exporter dashboard
+  become: yes
+  copy:
+    src: node_exporter_dashboard.json
+    dest: /var/lib/grafana/dashboards/node_exporter.json
+    owner: grafana
+    group: grafana
+  notify: Restart Grafana
+
 # "enabled" controls startup behavior. True starts the service on boot.
 # False requires manual start. Monitoring must survive reboots, so yes.
 - name: Start and enable Grafana
