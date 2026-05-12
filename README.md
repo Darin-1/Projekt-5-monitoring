@@ -138,3 +138,9 @@ Läraren ställde detta som ett krav för att simulera hur en "jump host" eller 
 
 ### Varför separat monitor-server?
 Genom att separera övervakningen (`monitor`) från tjänsteservrarna (`server1` och `server2`) ser vi till att om en tjänsteserver kraschar av hög belastning, så överlever fortfarande övervakningsservern och kan larma om kraschen.
+
+### Automatisering av Dashboards (Grafana Provisioning)
+Istället för att manuellt konfigurera Grafana via webbgränssnittet använder vi Ansible för att kopiera in förkonfigurerade mallar för Data Sources (Prometheus) och Dashboards (Node Exporter). Detta säkerställer att hela systemet följer "Infrastructure as Code"-principen och är redo att användas direkt efter uppstart.
+
+### Användning av Ansible Handlers
+För att undvika onödiga omstarter av tjänster som Prometheus och Grafana använder playbooken Handlers. Tjänsterna startas endast om när Ansible upptäcker en faktisk förändring i konfigurationsfilerna, vilket är en "best practice" för stabil drift.
