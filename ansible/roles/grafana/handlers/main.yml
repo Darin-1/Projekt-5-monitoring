@@ -1,0 +1,9 @@
+---
+# Handlers are only triggered when a task reports a "changed" state.
+# This prevents unnecessary service restarts on every playbook run.
+
+- name: Restart Grafana
+  become: yes
+  systemd:
+    name: grafana-server
+    state: restarted

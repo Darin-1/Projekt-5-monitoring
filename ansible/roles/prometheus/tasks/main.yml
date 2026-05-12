@@ -22,9 +22,13 @@
         - job_name: 'nodes'
           static_configs:
             - targets: ['192.168.56.11:9100', '192.168.56.12:9100', '192.168.56.13:9100']
+  notify: Restart Prometheus
 
-- name: Restart Prometheus
+# "enabled" controls startup behavior. True starts the service on boot.
+# False requires manual start. Monitoring must survive reboots, so yes.
+- name: Start and enable Prometheus
   become: yes
   systemd:
     name: prometheus
-    state: restarted
+    state: started
+    enabled: yes
