@@ -1,20 +1,19 @@
-# Sets up local VMs in an isolated network.
-# Using Vagrant avoids cloud costs and keeps testing local.
+# Keeps testing local and avoids cloud costs by running virtual machines.
 Vagrant.configure("2") do |config|
-  # "box" determines the base operating system.
-  # "ubuntu/jammy64" provides a stable Ubuntu 22.04 LTS environment.
+  # "box" sets the base OS. "ubuntu/jammy64" boots Ubuntu 22.04.
+  # Other boxes boot different systems. We need a stable base, so jammy64.
   config.vm.box = "ubuntu/jammy64"
 
-  # "synced_folder" shares a host directory with the VM.
-  # Syncing "../" to "/projekt" lets the control node read Ansible files.
+  # "synced_folder" shares directories. It maps the host project root to the VM.
+  # Without this, the VM cannot see our files. Ansible runs from the VM, so we share it.
   config.vm.define "control" do |ctrl|
     ctrl.vm.hostname = "control"
     ctrl.vm.network "private_network", ip: "192.168.56.10"
-    ctrl.vm.synced_folder "../", "/projekt"
+    ctrl.vm.synced_folder "../", "/project"
   end
 
-  # "private_network" assigns a static IP on a host-only network.
-  # Static IPs ensure Ansible always finds the target machines.
+  # "private_network" creates an isolated network. A static IP locks the address.
+  # DHCP changes addresses dynamically. Ansible needs fixed addresses, so static.
   config.vm.define "monitor" do |mon|
     mon.vm.hostname = "monitor"
     mon.vm.network "private_network", ip: "192.168.56.11"

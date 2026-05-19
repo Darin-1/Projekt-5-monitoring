@@ -1,0 +1,10 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    # Since Prometheus and Grafana run on the same 'monitoring' node, localhost is used
+    url: http://localhost:9090
+    isDefault: true
+    editable: false

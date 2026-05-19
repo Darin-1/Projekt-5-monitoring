@@ -1,11 +1,17 @@
 ---
-- name: Installera Prometheus
+# Installs Prometheus and configures it to scrape the target nodes.
+
+# "become" escalates privileges. True runs the task as root.
+# False runs as the user. Apt requires root, so yes.
+- name: Install Prometheus
   become: yes
   apt:
     name: prometheus
     state: present
 
-- name: Konfigurera Prometheus scrape targets
+# "content" writes strings to a file. It creates the config inline.
+# Template uses a separate file. Inline keeps it self-contained, so content.
+- name: Configure Prometheus scrape targets
   become: yes
   copy:
     dest: /etc/prometheus/prometheus.yml
@@ -13,12 +19,16 @@
       global:
         scrape_interval: 15s
       scrape_configs:
-        - job_name: 'noder'
+        - job_name: 'nodes'
           static_configs:
             - targets: ['192.168.56.11:9100', '192.168.56.12:9100', '192.168.56.13:9100']
+  notify: Restart Prometheus
 
-- name: Starta om Prometheus
+# "enabled" controls startup behavior. True starts the service on boot.
+# False requires manual start. Monitoring must survive reboots, so yes.
+- name: Start and enable Prometheus
   become: yes
   systemd:
     name: prometheus
-    state: restarted
+    state: started
+    enabled: yes
