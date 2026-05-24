@@ -194,6 +194,18 @@ Inga specifika portar begränsas; alla portar (inkl. 9090, 3000, 9100) är öppn
 
 *Åtgärd:* Installera och konfigurera UFW via Ansible så att enbart portar som krävs är öppna (t.ex. begränsa tillgången till Node Exporter port 9100 enbart till `monitor`-nodens IP).
 
+
+Brist 3: Single Point of Failure (SPOF) för övervakningen
+Alla centrala övervakningskomponenter (Prometheus och Grafana) körs på en och samma maskin, monitor servern. Om operativsystemet på den servern kraschar, stannar all övervakning omedelbart och vi blir helt blinda för fel i systemet.
+
+
+Brist 4: Öppen åtkomst utan autentisering (inloggning)
+Prometheus databas (port 9090) och Node Exporter (port 9100) saknar lösenordsskydd. Vem som helst med tillgång till nätverket kan läsa all serverdata, eller medvetet köra orimligt tunga sökningar i databasen tills hela servern kraschar av överbelastning.
+
+Brist 5: Ingen backup av historisk data
+Det saknas rutiner för att ta säkerhetskopior. All insamlad systemdata ligger enbart lokalt på monitor serverns virtuella disk. Om denna disk blir korrupt förloras all historisk data permanent.
+
+
 ---
 
 ## Verifiering
