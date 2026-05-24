@@ -1,0 +1,15 @@
+---
+# Delade variabler för övervakningsinfrastrukturen
+
+node_exporter_port: "9100"
+prometheus_port: "9090"
+grafana_port: "3000"
+
+monitor_ip: "192.168.56.11"
+server1_ip: "192.168.56.12"
+server2_ip: "192.168.56.13"
+
+prometheus_scrape_targets:
+  - "{{ monitor_ip }}:{{ node_exporter_port }}"
+  - "{{ server1_ip }}:{{ node_exporter_port }}"
+  - "{{ server2_ip }}:{{ node_exporter_port }}"

@@ -21,7 +21,7 @@
       scrape_configs:
         - job_name: 'nodes'
           static_configs:
-            - targets: ['192.168.56.11:9100', '192.168.56.12:9100', '192.168.56.13:9100']
+            - targets: {{ prometheus_scrape_targets | to_json }}
   notify: Restart Prometheus
 
 # "enabled" controls startup behavior. True starts the service on boot.
