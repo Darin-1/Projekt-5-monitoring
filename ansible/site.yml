@@ -1,13 +1,12 @@
 ---
 # Separates the monitoring stack from the targets to isolate the metrics database.
 
-vars_files:
-  - vars/main.yml
-
 # "hosts" defines the targets. "all" selects every machine.
 # A specific group limits the targets. We need metrics from everywhere, so all.
 - name: Install Node Exporter on all nodes
   hosts: all
+  vars_files:
+    - vars/main.yml
   roles:
     - node_exporter
 
@@ -15,6 +14,8 @@ vars_files:
 # "all" installs the database everywhere. We isolate the metrics, so monitoring.
 - name: Install monitoring stack
   hosts: monitoring
+  vars_files:
+    - vars/main.yml
   roles:
     - prometheus
     - grafana
